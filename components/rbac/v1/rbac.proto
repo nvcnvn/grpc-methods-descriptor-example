@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package components.rbac.v1;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "github.com/grpc-methods-descriptor-example/components/rbac/v1;rbacv1";
+
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_CUSTOMER = 1;
+  ROLE_ADMIN = 2;
+}
+
+message RoleBasedAccessControl {
+  repeated Role allowed_roles = 1;
+  bool allow_unauthenticated = 2;
+}
+
+extend google.protobuf.MethodOptions {
+  optional RoleBasedAccessControl access_control = 90000; // I don't know about this 90000, seem as long as it's unique
+}

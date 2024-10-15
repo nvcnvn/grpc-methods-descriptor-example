@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package components.users.v1;
 
+import "components/rbac/v1/rbac.proto";
+
 option go_package = "github.com/grpc-methods-descriptor-example/components/users/v1;usersv1";
 
 message GetUserRequest {
@@ -14,6 +16,29 @@ message GetUserResponse {
   string email = 3;
 }
 
+message DeleteUserRequest {
+  string id = 1;
+}
+
+message DeleteUserResponse {
+  string id = 1;
+}
+
 service UsersService {
-  rpc GetUser(GetUserRequest) returns (GetUserResponse);
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (components.rbac.v1.access_control) = {
+      allowed_roles: [
+        ROLE_CUSTOMER,
+        ROLE_ADMIN
+      ]
+      allow_unauthenticated: false
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (components.rbac.v1.access_control) = {
+      allowed_roles: [ROLE_ADMIN]
+      allow_unauthenticated: false
+    };
+  }
 }
